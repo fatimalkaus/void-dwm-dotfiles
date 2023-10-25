@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+function send_notification {
+  sound=$(pamixer --get-volume-human )
+
+  icon_high=󰕾
+  icon_low=󰕿
+  icon_medium=󰖀
+  icon_off=󰖁
+
+  if [[ "$sound" = "muted" ]]; then
+      sound=0
+  else
+      sound=$(echo $sound | cut -d '%' -f 1)
+  fi
+
+  if [[ "$sound" = "0" ]]; then
+      icon=$icon_off
+  else
+      icon=$icon_medium
+  fi
+
+  bar=$(seq -s "󰹟" 0 $((sound / 4)) | sed 's/[0-9]//g')
+
+  dunstify -r 5555 -u low -t 800 "$icon  $sound%           $bar"
+}
+
+case $1 in
+  up)
+    # increase the sound by 5%
+    pamixer -i 5
+    send_notification
+    ;;
+  down)
+    # decease the sound by 5%
+    pamixer -d 5
+    send_notification
+    ;;
+  mute)
+    # mute 
+    pamixer -t
+    send_notification
+    ;;
+esac

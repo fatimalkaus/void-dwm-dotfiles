@@ -1,0 +1,8 @@
+#!/bin/bash
+
+l=$(setxkbmap -query | grep layout | cut -d':' -f 2- | tr -d ' ')
+if [ "$l" = "ru" ]; then
+  setxkbmap us
+else 
+  setxkbmap ru
+fi
